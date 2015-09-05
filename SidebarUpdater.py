@@ -71,12 +71,12 @@ while True:
             time.sleep(sleepTime)
             continue
 
-        print '\n---------- SIDEBAR TEMPLATE ----------'
-        print sidebarTemplate
-        print '--------------------------------------\n'
+        #print '\n---------- SIDEBAR TEMPLATE ----------'
+        #print sidebarTemplate
+        #print '--------------------------------------\n'
 
-    print 'Snoozing for 60 seconds until next update...\n'
-    time.sleep(60)
+    print 'Snoozing for ' + str(sleepTime) + ' seconds until next update...\n'
+    time.sleep(sleepTime)
 
     if not testMode:
         reddit.refresh_access_information(accessInfo['refresh_token'])
