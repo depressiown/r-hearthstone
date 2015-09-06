@@ -9,19 +9,21 @@ import calendar
 import time
 import requests
 import string
+import traceback
 import yaml
 
 
 class HearthstoneCalendar:
 
-    def __init__(self, config):
+    def __init__(self, config, logger):
 
         self.id = config.getCalendarID()
         self.key = config.getCalendarKey()
+        self.logger = logger
 
     def __getUpcomingEvents(self):
 
-        print 'Fetching calendar (' + self.id + ') from Google API...'
+        self.logger.info('Fetching calendar (' + self.id + ') from Google API...')
         googleCalendar = requests.get(
             "https://www.googleapis.com/calendar/v3/calendars/" + self.id + "/events",
             params={
@@ -82,9 +84,11 @@ class HearthstoneCalendar:
                     properties = {}
                     print "YAML ERROR: description is not a dictionary"
             except yaml.YAMLError as e:
-                print "YAML ERROR: {0}".format(e)
+                self.logger.error('Error parsing YAML: {0}'.format(e))
+                self.logger.error(traceback.format_exc())
             except Exception as e:
-                print "ERROR: {0}".format(e)
+                self.logger.error('Exception parsing YAML: {0}'.format(e))
+                self.logger.error(traceback.format_exc())
 
         # Show the icon depending on the type of the event
         eventType = properties.get("type", "show")
@@ -115,8 +119,8 @@ class HearthstoneCalendar:
         for event in self.__getUpcomingEvents():
             markdown += self.__formatEvent(event) + '\n\n'
 
-        print '\n---------- CALENDAR MARKDOWN ----------'
-        print markdown
-        print '---------------------------------------\n'
+        self.logger.info('---------- CALENDAR MARKDOWN ----------')
+        self.logger.info('\n' + markdown)
+        self.logger.info('---------------------------------------')
 
         return markdown

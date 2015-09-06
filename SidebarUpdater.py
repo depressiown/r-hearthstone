@@ -11,18 +11,29 @@ Coming soon:
 '''
 
 import HTMLParser
+import logging
 import praw
 import time
+import traceback
 from SidebarConfiguration import SidebarConfiguration
 from HearthstoneCalendar import HearthstoneCalendar
 from HearthstoneStreams import HearthstoneStreams
 
 
-testMode = False
+testMode = True
 sleepTime = 60
 config = SidebarConfiguration()
 
 reddit = praw.Reddit('/r/hearthstone sidebar updater')
+
+logger = logging.getLogger('sidebar.logger')
+logger.setLevel(logging.INFO)
+
+fileHandler = logging.FileHandler('bot.log')
+fileHandler.setLevel(logging.INFO)
+fileHandler.setFormatter(logging.Formatter('%(asctime)-15s %(levelname)-8s %(message)s'))
+
+logger.addHandler(fileHandler)
 
 if not testMode:
     reddit.set_oauth_app_info(client_id=config.getRedditOAuthClientID(),
@@ -35,24 +46,26 @@ while True:
 
     calendarMarkdown = ''
     try:
-        calendar = HearthstoneCalendar(config)
+        calendar = HearthstoneCalendar(config, logger)
         calendarMarkdown = calendar.getCalendarMarkdown()
     except Exception as e:
-        print 'Exception fetching Calendar: {0}'.format(e)
-        print 'Sleeping then doing another iteration.'
+        logger.error('Exception fetching Calendar: {0}'.format(e))
+        logger.error(traceback.format_exc())
+        logger.error('Sleeping then doing another iteration.')
         time.sleep(sleepTime)
         continue
 
     topStreamMarkdown = ''
     randomStreamMarkdown = ''
     try:
-        streams = HearthstoneStreams(config)
+        streams = HearthstoneStreams(config, logger)
         streams.populate()
         topStreamMarkdown = streams.getTopStreamerMarkdown()
         randomStreamMarkdown = streams.getRandomStreamerMarkdown()
     except Exception as e:
-        print 'Exception fetching Streams: {0}'.format(e)
-        print 'Sleeping then doing another iteration.'
+        logger.error('Exception fetching Streams: {0}'.format(e))
+        logger.error(traceback.format_exc())
+        logger.error('Sleeping then doing another iteration.')
         time.sleep(sleepTime)
         continue
 
@@ -66,8 +79,9 @@ while True:
             sidebarTemplate = sidebarTemplate.replace("{{random_streams}}", randomStreamMarkdown)
             subreddit.edit_wiki_page("config/sidebar", sidebarTemplate)
         except Exception as e:
-            print 'Exception posting sidebar: {0}'.format(e)
-            print 'Sleeping then doing another iteration.'
+            logger.error('Exception posting sidebar: {0}'.format(e))
+            logger.error(traceback.format_exc())
+            logger.error('Sleeping then doing another iteration.')
             time.sleep(sleepTime)
             continue
 
@@ -75,7 +89,7 @@ while True:
         #print sidebarTemplate
         #print '--------------------------------------\n'
 
-    print 'Snoozing for ' + str(sleepTime) + ' seconds until next update...\n'
+    logger.info('Snoozing for ' + str(sleepTime) + ' seconds until next update...\n')
     time.sleep(sleepTime)
 
     if not testMode:

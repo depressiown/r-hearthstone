@@ -18,15 +18,16 @@ class HearthstoneStreams:
     numberOfTopStreams = 3
     numberOfRandomStreams = 3
 
-    def __init__(self, config):
+    def __init__(self, config, logger):
 
         self.twitchID = config.getTwitchClientID()
         self.twitchSecret = config.getTwitchClientSecret()
+        self.logger = logger
         self.streamList = []
 
     def __addTwitchStreams(self):
 
-        print 'Fetching streams from Twitch API...'
+        self.logger.info('Fetching streams from Twitch API...')
         twitchTop50 = requests.get(
             "https://api.twitch.tv/kraken/streams",
             params={
@@ -78,9 +79,9 @@ class HearthstoneStreams:
         for streamIndex in range(0, HearthstoneStreams.numberOfTopStreams):
             markdown += self.__buildFormattedStream(streamIndex)
 
-        print '\n---------- TOP STREAM MARKDOWN ----------'
-        print markdown
-        print '-----------------------------------------\n'
+        self.logger.info('---------- TOP STREAM MARKDOWN ----------')
+        self.logger.info('\n' + markdown)
+        self.logger.info('-----------------------------------------')
 
         return markdown
 
@@ -95,8 +96,8 @@ class HearthstoneStreams:
         for streamIndex in randomIndexes:
             markdown += self.__buildFormattedStream(streamIndex)
 
-        print '\n---------- RANDOM STREAM MARKDOWN ----------'
-        print markdown
-        print '--------------------------------------------\n'
+        self.logger.info('---------- RANDOM STREAM MARKDOWN ----------')
+        self.logger.info('\n' + markdown)
+        self.logger.info('--------------------------------------------')
 
         return markdown
