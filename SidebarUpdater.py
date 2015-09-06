@@ -20,8 +20,8 @@ from HearthstoneCalendar import HearthstoneCalendar
 from HearthstoneStreams import HearthstoneStreams
 
 
-testMode = True
-sleepTime = 60
+testMode = False
+sleepTime = 300
 config = SidebarConfiguration()
 
 reddit = praw.Reddit('/r/hearthstone sidebar updater')
