@@ -90,7 +90,16 @@ while True:
         #print '--------------------------------------\n'
 
     logger.info('Snoozing for ' + str(sleepTime) + ' seconds until next update...\n')
-    time.sleep(sleepTime)
 
-    if not testMode:
-        reddit.refresh_access_information(accessInfo['refresh_token'])
+    try:
+        time.sleep(sleepTime)
+    except Exception as e:
+        logger.error('Exception while sleeping: {0}'.format(e))
+        logger.error(traceback.format_exc())
+
+    try:
+        if not testMode:
+            reddit.refresh_access_information(accessInfo['refresh_token'])
+    except Exception as e:
+        logger.error('Exception refreshing reddit access: {0}'.format(e))
+        logger.error(traceback.format_exc())
