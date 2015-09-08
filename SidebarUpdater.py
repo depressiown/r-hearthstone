@@ -12,6 +12,7 @@ Coming soon:
 
 import HTMLParser
 import logging
+import OAuth2Util
 import praw
 import time
 import traceback
@@ -39,7 +40,8 @@ if not testMode:
     reddit.set_oauth_app_info(client_id=config.getRedditOAuthClientID(),
                               client_secret=config.getRedditOAuthClientSecret(),
                               redirect_uri='http://127.0.0.1:65010/authorize_callback')
-    accessInfo = reddit.get_access_information(config.getRedditOAuthAccessCode())
+    oauth = OAuth2Util.OAuth2Util(reddit)
+    #accessInfo = reddit.get_access_information(config.getRedditOAuthAccessCode())
     subreddit = reddit.get_subreddit(config.getTargetSubreddit())
 
 while True:
@@ -85,10 +87,6 @@ while True:
             time.sleep(sleepTime)
             continue
 
-        #print '\n---------- SIDEBAR TEMPLATE ----------'
-        #print sidebarTemplate
-        #print '--------------------------------------\n'
-
     logger.info('Snoozing for ' + str(sleepTime) + ' seconds until next update...\n')
 
     try:
@@ -99,7 +97,8 @@ while True:
 
     try:
         if not testMode:
-            reddit.refresh_access_information(accessInfo['refresh_token'])
+            oauth.refresh()
+            #reddit.refresh_access_information(accessInfo['refresh_token'])
     except Exception as e:
         logger.error('Exception refreshing reddit access: {0}'.format(e))
         logger.error(traceback.format_exc())
