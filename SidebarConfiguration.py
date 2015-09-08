@@ -34,8 +34,5 @@ class SidebarConfiguration:
     def getRedditOAuthAccessCode(self):
         return self.config.get('reddit', 'oauth_access_code')
 
-    def getTwitchClientID(self):
-        return self.config.get('twitch', 'id')
-
-    def getTwitchClientSecret(self):
-        return self.config.get('twitch', 'secret')
+    def getLogFileLocation(self):
+        return self.config.get('log', 'file')

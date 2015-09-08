@@ -2,7 +2,6 @@
 subreddit = depressiownsandbox
 oauth_client_id = something
 oauth_client_secret = something
-oauth_access_code = something
 
 [google]
 token = something
@@ -10,6 +9,5 @@ token = something
 [calendar]
 id = something@group.calendar.google.com
 
-[twitch]
-id = something
-secret = something
+[log]
+file = /path/to/file.log
