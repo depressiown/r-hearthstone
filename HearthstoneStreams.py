@@ -18,10 +18,8 @@ class HearthstoneStreams:
     numberOfTopStreams = 3
     numberOfRandomStreams = 3
 
-    def __init__(self, config, logger):
+    def __init__(self, logger):
 
-        self.twitchID = config.getTwitchClientID()
-        self.twitchSecret = config.getTwitchClientSecret()
         self.logger = logger
         self.streamList = []
 

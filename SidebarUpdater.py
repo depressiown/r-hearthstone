@@ -54,7 +54,7 @@ except Exception as e:
 topStreamMarkdown = ''
 randomStreamMarkdown = ''
 try:
-    streams = HearthstoneStreams(config, logger)
+    streams = HearthstoneStreams(logger)
     streams.populate()
     topStreamMarkdown = streams.getTopStreamerMarkdown()
     randomStreamMarkdown = streams.getRandomStreamerMarkdown()
